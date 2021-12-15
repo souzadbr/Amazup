@@ -1,12 +1,15 @@
 package br.com.zup.Amazup.livro;
 
 import br.com.zup.Amazup.autor.Autor;
+import br.com.zup.Amazup.componentes.Conversor;
 import br.com.zup.Amazup.componentes.UriContrutor;
 import br.com.zup.Amazup.enums.Genero;
+import br.com.zup.Amazup.livro.dtos.LivroDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@WebMvcTest({LivroController.class, UriContrutor.class})
+@WebMvcTest({LivroController.class, UriContrutor.class, Conversor.class})
 public class LivroControllerTest {
     @MockBean
     private LivroService livroService;
@@ -24,9 +27,11 @@ public class LivroControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
     private ObjectMapper objectMapper;
     private Livro livro;
     private Autor autor;
+    private LivroDTO livroDTO;
 
     @BeforeEach
     private void setup(){
@@ -57,6 +62,56 @@ public class LivroControllerTest {
                                 .value("http://localhost:8080/livros/"+livro.getId())
                 );
     }
+
+    @Test
+    public void testeRotaParaCadastrarLivroValidacaoAutor()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        livro.setAutor(null);
+        String json = objectMapper.writeValueAsString(livroDTO);
+
+        ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+    @Test
+    public void testeRotaParaCadastrarLivroValidacaoPreçoNull()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        livro.setPreco(null);
+        String json = objectMapper.writeValueAsString(livroDTO);
+
+        ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+    @Test
+    public void testeRotaParaCadastrarLivroValidacaoNomeNull()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        livro.setNome(null);
+        String json = objectMapper.writeValueAsString(livroDTO);
+
+        ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+    @Test
+    public void testeRotaParaCadastrarLivroValidacaoNomeBlank()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        livro.setNome(" ");
+        String json = objectMapper.writeValueAsString(livro);
+
+        ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+
+
+
+
+
 
     //Validações: Autor Not Null, Preço Not Null, Nome do Livro Not Null Not blank,
     // Limitar casas decimais no preço, preço não pode menor que 0, genero Not NULL, genero Valido

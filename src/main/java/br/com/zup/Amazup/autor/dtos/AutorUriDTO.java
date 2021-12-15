@@ -1,9 +1,11 @@
 package br.com.zup.Amazup.autor.dtos;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 public class AutorUriDTO {
     public URI uri;
+    @NotNull
     public String nome;
 
     public String getNome() {

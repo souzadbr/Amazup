@@ -1,5 +1,6 @@
 package br.com.zup.Amazup.livro;
 
+import br.com.zup.Amazup.exception.LivroJaCadastradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,13 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
-    public Livro salvarLivro(Livro livro){
-       Livro livroObjeto = livroRepository.save(livro);
-       return livroObjeto;
+    public Livro salvarLivro(Livro livro) {
+        Livro livroEncontrado = livroRepository.findByNome(livro.getNome());
+        if (livro.getAutor().getId() == livroEncontrado.getAutor().getId()) {
+            throw new LivroJaCadastradoException();
+        }
+
+        return livroRepository.save(livro);
     }
 
     public Livro buscarLivroPorId(int id){
@@ -23,4 +28,6 @@ public class LivroService {
 
         return livroOptional.get();
     }
+
+
 }

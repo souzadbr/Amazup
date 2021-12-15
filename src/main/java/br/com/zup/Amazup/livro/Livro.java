@@ -4,12 +4,16 @@ import br.com.zup.Amazup.autor.Autor;
 import br.com.zup.Amazup.enums.Genero;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Livro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank(message = "Esse campo não deve ser vazio")
     private String nome;
     @Enumerated(EnumType.STRING)
     private Genero genero;
@@ -57,7 +61,7 @@ public class Livro {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 }

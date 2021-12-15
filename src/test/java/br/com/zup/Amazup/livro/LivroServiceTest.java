@@ -1,7 +1,9 @@
 package br.com.zup.Amazup.livro;
 
+import br.com.zup.Amazup.exception.LivroJaCadastradoException;
 import br.com.zup.Amazup.autor.Autor;
 import br.com.zup.Amazup.enums.Genero;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,6 +44,20 @@ public class LivroServiceTest {
 
         Mockito.verify(livroRepository, Mockito.times(1)).save(Mockito.any(Livro.class));
     }
+
+    @Test
+    public void cadastrarLivroRepetido(){
+        Mockito.when(livroRepository.save(Mockito.any(Livro.class))).thenReturn(livro);
+
+        RuntimeException exception = Assertions.assertThrows(LivroJaCadastradoException.class, ()-> {
+          livroService.salvarLivro(livro);
+        });
+
+        Mockito.verify(livroRepository, Mockito.times(0)).save(Mockito.any(Livro.class));
+    }
+
+
+
 
     //Validações: Não Cadastrar o mesmo Livro para o mesmo autor 2 vezes
 }

@@ -1,6 +1,7 @@
 package br.com.zup.Amazup.autor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "autores")
@@ -8,6 +9,7 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull(message = "Esse campo não deve ser vazio")
     private String nome;
 
     public Autor() {
