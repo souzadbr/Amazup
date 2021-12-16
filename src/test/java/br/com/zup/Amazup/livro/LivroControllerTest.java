@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -67,7 +66,7 @@ public class LivroControllerTest {
     public void testeRotaParaCadastrarLivroValidacaoAutor()throws Exception{
         Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
         livro.setAutor(null);
-        String json = objectMapper.writeValueAsString(livroDTO);
+        String json = objectMapper.writeValueAsString(livro);
 
         ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
                 .contentType(MediaType.APPLICATION_JSON).content(json))
@@ -77,8 +76,8 @@ public class LivroControllerTest {
     @Test
     public void testeRotaParaCadastrarLivroValidacaoPreçoNull()throws Exception{
         Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
-        livro.setPreco(null);
-        String json = objectMapper.writeValueAsString(livroDTO);
+        livro.setPreco(0);
+        String json = objectMapper.writeValueAsString(livro);
 
         ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
                         .contentType(MediaType.APPLICATION_JSON).content(json))
@@ -89,7 +88,7 @@ public class LivroControllerTest {
     public void testeRotaParaCadastrarLivroValidacaoNomeNull()throws Exception{
         Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
         livro.setNome(null);
-        String json = objectMapper.writeValueAsString(livroDTO);
+        String json = objectMapper.writeValueAsString(livro);
 
         ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
                         .contentType(MediaType.APPLICATION_JSON).content(json))
@@ -107,12 +106,49 @@ public class LivroControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is(422));
     }
 
+    @Test
+    public void testeRotaParaCadastrarLivroValidacaoGeneroNull()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        livro.setGenero(null);
+        String json = objectMapper.writeValueAsString(livro);
+
+        ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+    @Test
+    public void testarRotaParaCadastrarGeneroValid()throws Exception{
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
+        String json = objectMapper.writeValueAsString(livro);
+        json = json.replace("FICCAO_CIENTIFICA","TESTE");
+
+        ResultActions resultado = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+    }
+
+    @Test
+    public void testarRotaDeCadastroDeLivroComPreçoAbaixoDoMinimo()throws Exception{
+        Mockito.when(livroService.salvarLivro(livro)).thenReturn(livro);
+        livro.setPreco(0);
+        String json = objectMapper.writeValueAsString(livro);
+
+        ResultActions resultado = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
+                        .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(422));
+
+    }
 
 
 
 
 
 
-    //Validações: Autor Not Null, Preço Not Null, Nome do Livro Not Null Not blank,
+
+
+
+
+    //Validações: eço Not NuAutor Not Null, Prll, Nome do Livro Not Null Not blank,
     // Limitar casas decimais no preço, preço não pode menor que 0, genero Not NULL, genero Valido
 }
