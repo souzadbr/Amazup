@@ -27,7 +27,7 @@ public class LivroController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String, URI> cadastrarLivro(@RequestBody @Valid LivroDTO livroDTO){
+    public HashMap<String, URI> cadastrarLivro(@RequestBody @Valid LivroDTO livroDTO) {
         Livro livro = conversor.map(livroDTO, Livro.class);
         Livro livroObjeto = livroService.salvarLivro(livro);
 
@@ -37,14 +37,14 @@ public class LivroController {
         resposta.put("vitrine", enderecoVitrini);
         return resposta;
     }
-
-    @GetMapping("/{id}")
+}
+  /*  @GetMapping("/{id}")
     public LivroDTO exibirLivro(@PathVariable int id){
         Livro livro = livroService.buscarLivroPorId(id);
         ModelMapper modelMapper = new ModelMapper();
 
         LivroDTO livroDTO = modelMapper.map(livro, LivroDTO.class);
-        livroDTO.getAutor().setUri(contrutor.criarUri("/livros",""+livro.getAutor().getId()));
+     //   livroDTO.getAutor().setUri(contrutor.criarUri("/livros",""+livro.getAutor().getId()));
         return livroDTO;
-    }
-}
+    }*/
+
