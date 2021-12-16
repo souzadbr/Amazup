@@ -1,6 +1,6 @@
 package br.com.zup.Amazup.livro;
 
-import br.com.zup.Amazup.exception.LivroJaCadastradoException;
+import br.com.zup.Amazup.configs.exception.LivroJaCadastradoException;
 import br.com.zup.Amazup.autor.Autor;
 import br.com.zup.Amazup.enums.Genero;
 import org.junit.jupiter.api.Assertions;
