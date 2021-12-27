@@ -32,7 +32,7 @@ public class LivroControllerTest {
     private Autor autor;
     private LivroDTO livroDTO;
 
-    @BeforeEach
+    @BeforeEach //sempre é executado antes de cada teste
     private void setup(){
         objectMapper = new ObjectMapper();
 
@@ -95,16 +95,21 @@ public class LivroControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is(422));
     }
 
-    @Test
-    public void testeRotaParaCadastrarLivroValidacaoNomeBlank()throws Exception{
-        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);
-        livro.setNome(" ");
-        String json = objectMapper.writeValueAsString(livro);
+    @Test //teste de validação recebendo um nome vazio
+    public void testeRotaParaCadastrarLivroValidacaoNomeBlank()throws Exception{ //nome do método + throws Exception
+        // que indica que pode gerar uma exceção
+        Mockito.when(livroService.salvarLivro(Mockito.any(Livro.class))).thenReturn(livro);//simula o quue a
+        // livroService deve fazer usando mockito retornando um livro
+        livro.setNome(" ");//passa um livro com nome nulo
+        String json = objectMapper.writeValueAsString(livro);//transforma a String em JSON
+
 
         ResultActions respostaDaRequsicao = mockMvc.perform(MockMvcRequestBuilders.post("/livros")
                         .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(422));
-    }
+    } //Passa que a resposta da requisição vem pelo caminho /livros para postar a informação pelo verbo post
+    // usando json e que a resposta esperada é 422 ..
+    // .ou seja passando  livro.setNome(" ") a resposta esperada é 422;
 
     @Test
     public void testeRotaParaCadastrarLivroValidacaoGeneroNull()throws Exception{
@@ -140,6 +145,20 @@ public class LivroControllerTest {
 
     }
 
+    @Test
+    public void testarDeletarLivro() throws Exception {
+        livro.setId(1); // passo o id que desejo testar
+        Mockito.doNothing().when(livroService).deletarLivro(Mockito.anyInt()); //mockito o livroService e simulo deletar
+        // qualquer numero inteiro
+
+        ResultActions resultado = mockMvc.perform(MockMvcRequestBuilders.delete("/livros"+livro.getId())
+                //deleta o livro + id passado que é um JSON
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(204));
+                //o esperado aqui é uma resposta 204 ...ok feito com sucesso
+        Mockito.verify(livroService, Mockito.times(1)).deletarLivro(Mockito.anyInt());
+        //mockito verify verifica se o método foi execultado 1x.
+    }
 
 
 
