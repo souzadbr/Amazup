@@ -37,14 +37,28 @@ public class LivroController {
         resposta.put("vitrine", enderecoVitrini);
         return resposta;
     }
-}
-  /*  @GetMapping("/{id}")
+
+    @GetMapping("/{id}")
     public LivroDTO exibirLivro(@PathVariable int id){
         Livro livro = livroService.buscarLivroPorId(id);
         ModelMapper modelMapper = new ModelMapper();
 
         LivroDTO livroDTO = modelMapper.map(livro, LivroDTO.class);
-     //   livroDTO.getAutor().setUri(contrutor.criarUri("/livros",""+livro.getAutor().getId()));
+        livroDTO.getAutor().setUri(contrutor.criarUri("/livros",""+livro.getAutor().getId()));
         return livroDTO;
-    }*/
+    }
 
+    @GetMapping ("/{id}")
+    public LivroDTO mostrarLivroPorId(@PathVariable int id){
+        return conversor.map(livroService.buscarLivroPorId(id), LivroDTO.class);
+    }
+
+    @DeleteMapping ("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarLivro(@PathVariable int id){
+        livroService.deletarLivro(id);
+    }
+
+
+
+}
