@@ -1,6 +1,7 @@
 package br.com.zup.Amazup.configs;
 
 import br.com.zup.Amazup.configs.exception.LivroJaCadastradoException;
+import br.com.zup.Amazup.configs.exception.LivroNãoEcontradaPorIdException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -36,5 +37,11 @@ public class ControllerAdvisor {
     public MensagemDeErro naoLegivelException() {
         return new MensagemDeErro("Informação do JSON ilegível");
 
+    }
+
+    @ExceptionHandler(LivroNãoEcontradaPorIdException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public MensagemDeErro livroNaoEncontrado(LivroNãoEcontradaPorIdException exception) {
+        return new MensagemDeErro("Livro não Encontrado");
     }
 }
